@@ -1,0 +1,52 @@
+{
+  "name": "compress-img",
+  "version": "0.0.1",
+  "description": "纯前端裁剪压缩图片",
+  "main": "dist/compress-img.cjs.js",
+  "module": "dist/compress-img.esm.js",
+  "unpkg": "dist/compress-img.min.js",
+  "types": "dist/core.d.ts",
+  "scripts": {
+    "dev": "npm run clean && rollup -w -c",
+    "build": "npm run clean && NODE_ENV=production rollup -c",
+    "clean": "rm -rf dist",
+    "pub": "npm run build && npm publish"
+  },
+  "author": "YAOLEI",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/plugin-transform-runtime": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@microsoft/api-extractor": "^7.9.10",
+    "core-js": "^3.6.5",
+    "rollup": "^2.45.2",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-generate-html-template": "^1.7.0",
+    "rollup-plugin-livereload": "^1.3.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-serve": "^1.0.3",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript": "^1.0.1",
+    "rollup-plugin-typescript2": "^0.27.2",
+    "rollup-plugin-uglify": "^6.0.4",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.2"
+  },
+  "homepage": "http://gitlab.hupu.com/revival-front-end/nba-hupu-sdk",
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.hupu.com/revival-front-end/nba-hupu-sdk"
+  },
+  "keywords": [
+    "canvas",
+    "纯前端裁剪压缩图片"
+  ],
+  "dependencies": {
+    "@hupu/api-bridge": "^0.1.3"
+  }
+}
