@@ -1,6 +1,6 @@
 {
   "name": "compress-image-canvas",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "通过canvas纯前端裁剪压缩图片",
   "main": "dist/compress-image-canvas.cjs.js",
   "module": "dist/compress-image-canvas.esm.js",

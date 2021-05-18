@@ -1,8 +1,5 @@
 # compressImages 纯前端通过canvas api 裁剪压缩图片
 
-图片自动裁剪压缩上传 (upload)
-根据目标尺寸自动裁剪并压缩的上传图片
-使用 element-upload 自定义上传 http-request
 使用方法:
 ```ts
 interface IsizeType {
