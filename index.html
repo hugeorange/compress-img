@@ -3,18 +3,186 @@
 
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport"
-		content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>纯前端压缩图片</title>
+	<title>纯前端裁剪-压缩图片</title>
 </head>
-<script src="http://wechatfe.github.io/lib/vconsole/3.4.0/vconsole.min.js"></script>
+<style>
+	/* 
+    input type=file 样式美化问题
+    原因：不能直接通过css样式进行修改
+    方法：1. 将该input隐藏，放置一个按钮，触发click事件上，动态为 input 增加
+         2. 将 input opacity: 0, 在定位过去一个 button
+    缺点：都得手动获取文件名赋值过去
+ */
+	.img-wrapper {
+		display: flex;
+	}
+
+	.img-wrapper>div {
+		margin-right: 10px;
+	}
+
+	.img-wrapper>div img {
+		max-width: 400px;
+	}
+</style>
 
 <body>
-	纯前端压缩图片
+	<p>请在 chrome 浏览器上使用，靠canvas一些列api做裁剪压缩工作</p>
+	<p>第一种方案：</p>
+	<div>
+		请输入裁剪后的尺寸
+		<input type="text" class="sizeW">
+		*
+		<input type="text" class="sizeH">
+		(如不输入裁剪尺寸则按下面等比缩放方案进行压缩)
+	</div>
+	<p>第二种方案：</p>
+	<div>
+		请输入缩放后的宽度
+		<input type="text" class="scale">
+		(默认当宽度大于1500px时缩放到1500px，高度按比例缩放)
+	</div>
+	<p></p>
+	<input id="img-btn" type="file" placeholder="请选择图片">
+	<button class="go-btn">确定</button>
+	<div class="img-wrapper">
+		<div class="origin">
+			<div>原图<span class="size"></span></div>
+			<img src="" alt="">
+		</div>
+		<div class="compress">
+			<div>处理后的图片<span class="size"></span></div>
+			<img src="" alt="">
+		</div>
+	</div>
 </body>
 <script>
-	
+	const $ = selector => document.querySelectorAll(selector)[0]
+	var imgObj = {
+		dom: {
+			imgBtn: document.querySelector('#img-btn'),
+			origin: $('.origin'),
+			compress: $('.compress'),
+			btn: $('.go-btn'),
+			sizeW: $('.sizeW'),
+			sizeH: $('.sizeH'),
+			scale: $('.scale'),
+		},
+		init() {
+			this.uploadEvent()
+			this.goCompress()
+		},
+		uploadEvent() {
+			var me = this
+			this.dom.imgBtn.onchange = function (e) {
+				me.file = e.target.files[0]
+				me.previewOrigin(me.file)
+				me.initPreviewCompress()
+			}
+		},
+
+		// 去压缩
+		goCompress() {
+			var me = this
+			this.dom.sizeH.oninput = function (e) {
+				me.dom.scale.value = ""
+			}
+			this.dom.scale.oninput = function () {
+				me.dom.sizeH.value = ""
+				me.dom.sizeW.value = ""
+			}
+			this.dom.btn.onclick = async function () {
+				let scale = me.dom.scale.value
+				let targetW = me.dom.sizeW.value
+				let targetH = me.dom.sizeH.value
+				let obj
+				if (scale) {
+					obj = { scale }
+				} else {
+					obj = { targetW, targetH }
+				}
+				if (!me.checkParam(scale, targetW, targetH)) return
+				const cImage = new CompressImage(me.file, obj)
+				const res = await cImage.getCompressImage(me.file)
+				// const res = await me.compressImg(me.file, obj)
+				me.previewCompress(res)
+			}
+		},
+		// 检查表单
+		checkParam(scale, sizeW, sizeH) {
+			if (!this.file) {
+				alert('请上传图片')
+				return false
+			}
+			if (!sizeW && !sizeH && !scale) return false
+			else return true
+		},
+
+		// 展示原图
+		previewOrigin(file) {
+			var oSize = (file.size / 1024).toFixed(2)
+			var oImg = URL.createObjectURL(file)
+
+			$('.origin .size').innerText = oSize
+			$('.origin img').src = oImg
+			$('.origin img').onload = function () {
+				var wh = ` KB； 宽：${this.naturalWidth} 高：${this.naturalHeight}`
+				$('.origin .size').innerText = oSize + wh
+			}
+
+			// var reader = new FileReader()
+			// reader.readAsDataURL(file)
+			// reader.onload = function(e) {
+			//     var img = new Image()
+			//     img.src = e.target.result
+			//     img.onload = function() {
+			// 此种形式获取图片文件宽高和将其插入到 dom 中，通过 naturalWidth 获取尺寸一致
+			//         console.log('FileReader形式获取宽高==>', this, this.width, this.height)
+			//     }
+			//     img.onerror = function() {
+			//         reject('图片裁剪压缩失败')
+			//     }
+			// }
+		},
+
+		// 初始化预览压缩后的图片
+		initPreviewCompress() {
+			$('.compress .size').innerText = ""
+			$('.compress img').src = ""
+		},
+
+		// 预览压缩图片
+		previewCompress(file) {
+			var cSize = (file.blob.size / 1024).toFixed(2)
+			var cImg = file.base64
+			$('.compress .size').innerText = ` ${cSize}KB；宽：${file.width} 高：${file.height}`
+			$('.compress img').src = cImg
+		},
+		
+		compressImg(file, obj) {
+			const self = this
+			return new Promise((resolve, reject) => {
+				var reader = new FileReader()
+				reader.readAsDataURL(file)
+				reader.onload = function (e) {
+					var img = new Image()
+					img.src = e.target.result
+					img.onload = function () {
+						const excuteImg = new CompressImage(this, obj)
+						const file = excuteImg.excuteCompressImg()
+						resolve(file)
+					}
+					img.onerror = function () {
+						reject('图片裁剪压缩失败')
+					}
+				}
+			})
+		}
+	}
+	imgObj.init()
+
 </script>
 
 </html>

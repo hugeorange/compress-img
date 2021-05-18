@@ -1,10 +1,10 @@
 {
-  "name": "compress-img",
-  "version": "0.0.1",
-  "description": "纯前端裁剪压缩图片",
-  "main": "dist/compress-img.cjs.js",
-  "module": "dist/compress-img.esm.js",
-  "unpkg": "dist/compress-img.min.js",
+  "name": "compress-image-canvas",
+  "version": "0.0.4",
+  "description": "通过canvas纯前端裁剪压缩图片",
+  "main": "dist/compress-image-canvas.cjs.js",
+  "module": "dist/compress-image-canvas.esm.js",
+  "unpkg": "dist/compress-image-canvas.min.js",
   "types": "dist/core.d.ts",
   "scripts": {
     "dev": "npm run clean && rollup -w -c",
@@ -37,16 +37,13 @@
     "tslib": "^2.0.1",
     "typescript": "^4.0.2"
   },
-  "homepage": "http://gitlab.hupu.com/revival-front-end/nba-hupu-sdk",
+  "homepage": "https://github.com/hugeorange/compress-img",
   "repository": {
     "type": "git",
-    "url": "http://gitlab.hupu.com/revival-front-end/nba-hupu-sdk"
+    "url": "https://github.com/hugeorange/compress-img"
   },
   "keywords": [
     "canvas",
     "纯前端裁剪压缩图片"
-  ],
-  "dependencies": {
-    "@hupu/api-bridge": "^0.1.3"
-  }
+  ]
 }
