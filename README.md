@@ -1,4 +1,5 @@
 # compressImages 纯前端通过canvas api 裁剪压缩图片
+- 演示地址：https://hugeorange.github.io/toolpage/img.html
 
 使用方法:
 ```ts
