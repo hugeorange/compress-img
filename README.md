@@ -1,4 +1,4 @@
-# compressImages 纯前端通过canvas api 裁剪压缩图片
+# 纯前端 `裁剪` `压缩` 图片
 - 演示地址：https://hugeorange.github.io/toolpage/img.html
 
 使用方法:
